@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('app', ['ngRoute', 'myApp', 'appFilters', 'appServices', 'appDirectives']);
+var app = angular.module('app', ['ngRoute', 'myApp', 'appFilters', 'appServices', 'appDirectives', 'angularUtils.directives.dirPagination']);
 
 /**
  * Define routes

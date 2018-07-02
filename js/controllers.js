@@ -21,6 +21,22 @@ app.controller('mainController', function($scope, $http) {
 
     };
 
+    //Create function to get all items for specific brand
+    $scope.getBrandDetails = function (brandId, campaignId) {
+        var apiRoute = baseUrl + 'common/items/' + token + '&brand=' + brandId;
+        apiRoute += (campaignId !== 0) ? '&campaign=' + campaignId : '';
+        var _brandItems = $http.get(apiRoute);
+        _brandItems.then(function (response) {
+                $scope.brandItems = response.data.Results;
+                $scope.sortKey = 'Id';
+                $scope.reverse = false;
+            },
+            function (error) {
+                console.log("Error: " + error);
+            });
+
+    };
+
     //Create function to get all campaigns for a brand
     $scope.getBrandCampaigns = function (brandId) {
         var apiRoute = baseUrl + 'common/campaigns/' + token + '&brand=' + brandId;
@@ -29,6 +45,7 @@ app.controller('mainController', function($scope, $http) {
                 $scope.brandCampaigns = response.data.Results;
                 $scope.brandCampaigns.unshift({BrandId: $scope.brandCampaigns[0].BrandId, CompanyId: 0, Id: 0, Name:"Show All"});
                 $scope.campaignSelection = $scope.brandCampaigns[0];
+                $scope.getBrandDetails(brandId, 0);
             },
             function (error) {
                 console.log("Error: " + error);
@@ -43,7 +60,13 @@ app.controller('mainController', function($scope, $http) {
 
     //Function that runs when campaign select value changes
     $scope.changeSelectedCampaign = function (item) {
+        $scope.getBrandDetails(item.BrandId, item.Id);
+    };
 
+    //Allow sorting of list
+    $scope.sort = function (keyname) {
+        $scope.sortKey = keyname;
+        $scope.reverse = !$scope.reverse;
     };
 
     //Init page by getting all brands available
