@@ -13,7 +13,11 @@ app.controller('mainController', function($scope, $http) {
         var apiRoute = baseUrl + 'common/brands/' + token;
         var _brand = $http.get(apiRoute);
         _brand.then(function (response) {
+            console.log(response);
                 $scope.brands = response.data.Results;
+                $scope.brands.unshift({Id: 0, Name:"Show All"});
+                $scope.brandSelection = $scope.brands[0];
+                $scope.getBrandCampaigns(0);
             },
             function (error) {
                 console.log("Error: " + error);
@@ -23,7 +27,8 @@ app.controller('mainController', function($scope, $http) {
 
     //Create function to get all items for specific brand
     $scope.getBrandDetails = function (brandId, campaignId) {
-        var apiRoute = baseUrl + 'common/items/' + token + '&brand=' + brandId;
+        var apiRoute = baseUrl + 'common/items/' + token;
+        apiRoute += (brandId !== 0) ? '&brand=' + brandId : '';
         apiRoute += (campaignId !== 0) ? '&campaign=' + campaignId : '';
         var _brandItems = $http.get(apiRoute);
         _brandItems.then(function (response) {
@@ -39,7 +44,8 @@ app.controller('mainController', function($scope, $http) {
 
     //Create function to get all campaigns for a brand
     $scope.getBrandCampaigns = function (brandId) {
-        var apiRoute = baseUrl + 'common/campaigns/' + token + '&brand=' + brandId;
+        var apiRoute = baseUrl + 'common/campaigns/' + token;
+        apiRoute += (brandId !== 0) ? '&brand=' + brandId : '';
         var _brandCampaigns = $http.get(apiRoute);
         _brandCampaigns.then(function (response) {
                 $scope.brandCampaigns = response.data.Results;
