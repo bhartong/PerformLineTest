@@ -6,6 +6,11 @@
             <select class="form-control" id="brandSelection" ng-model="brandSelection" ng-change="changeSelectedBrand(brandSelection)"
                     ng-options="brand.Name for brand in brands track by brand.Id">
             </select>
+            <br/>
+            <label id="campaignSelectionLabel" for="campaignSelection">Select a Campaign</label>
+            <select class="form-control" id="campaignSelection" ng-model="campaignSelection" ng-change="changeSelectedCampaign(campaignSelection)"
+                    ng-options="brandCampaign.Name for brandCampaign in brandCampaigns track by brandCampaign.Id">
+            </select>
         </div>
     </div>
 </div>

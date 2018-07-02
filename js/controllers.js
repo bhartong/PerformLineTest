@@ -21,6 +21,31 @@ app.controller('mainController', function($scope, $http) {
 
     };
 
+    //Create function to get all campaigns for a brand
+    $scope.getBrandCampaigns = function (brandId) {
+        var apiRoute = baseUrl + 'common/campaigns/' + token + '&brand=' + brandId;
+        var _brandCampaigns = $http.get(apiRoute);
+        _brandCampaigns.then(function (response) {
+                $scope.brandCampaigns = response.data.Results;
+                $scope.brandCampaigns.unshift({BrandId: $scope.brandCampaigns[0].BrandId, CompanyId: 0, Id: 0, Name:"Show All"});
+                $scope.campaignSelection = $scope.brandCampaigns[0];
+            },
+            function (error) {
+                console.log("Error: " + error);
+            });
+
+    };
+
+    //Function that runs when brand select value changes
+    $scope.changeSelectedBrand = function (item) {
+        $scope.getBrandCampaigns(item.Id);
+    };
+
+    //Function that runs when campaign select value changes
+    $scope.changeSelectedCampaign = function (item) {
+
+    };
+
     //Init page by getting all brands available
     $scope.getBrands();
 });
