@@ -1,8 +1,8 @@
 'use strict';
 var app = angular.module('myApp', []);
 
-app.controller('mainController', function($scope, $http) {
-	//Set a global variable to the base url for api
+app.controller('mainController', function ($scope, $http) {
+    //Set a global variable to the base url for api
     var baseUrl = 'https://api.performline.com/';
 
     //Set a global variable to the api token
@@ -13,9 +13,8 @@ app.controller('mainController', function($scope, $http) {
         var apiRoute = baseUrl + 'common/brands/' + token;
         var _brand = $http.get(apiRoute);
         _brand.then(function (response) {
-            console.log(response);
                 $scope.brands = response.data.Results;
-                $scope.brands.unshift({Id: 0, Name:"Show All"});
+                $scope.brands.unshift({Id: 0, Name: "Show All"});
                 $scope.brandSelection = $scope.brands[0];
                 $scope.getBrandCampaigns(0);
             },
@@ -32,7 +31,11 @@ app.controller('mainController', function($scope, $http) {
         apiRoute += (campaignId !== 0) ? '&campaign=' + campaignId : '';
         var _brandItems = $http.get(apiRoute);
         _brandItems.then(function (response) {
-                $scope.brandItems = response.data.Results;
+                if (response.data.Results !== null) {
+                    $scope.brandItems = response.data.Results;
+                } else {
+                    $scope.brandItems = [];
+                }
                 $scope.sortKey = 'Id';
                 $scope.reverse = false;
             },
@@ -48,10 +51,27 @@ app.controller('mainController', function($scope, $http) {
         apiRoute += (brandId !== 0) ? '&brand=' + brandId : '';
         var _brandCampaigns = $http.get(apiRoute);
         _brandCampaigns.then(function (response) {
-                $scope.brandCampaigns = response.data.Results;
-                $scope.brandCampaigns.unshift({BrandId: $scope.brandCampaigns[0].BrandId, CompanyId: 0, Id: 0, Name:"Show All"});
-                $scope.campaignSelection = $scope.brandCampaigns[0];
-                $scope.getBrandDetails(brandId, 0);
+                if (response.data.Results !== null) {
+                    $scope.brandCampaigns = response.data.Results;
+                    $scope.brandCampaigns.unshift({
+                        BrandId: $scope.brandCampaigns[0].BrandId,
+                        CompanyId: 0,
+                        Id: 0,
+                        Name: "Show All"
+                    });
+                    $scope.campaignSelection = $scope.brandCampaigns[0];
+                    $scope.getBrandDetails(brandId, 0);
+                } else {
+                    $scope.brandCampaigns = [];
+                    $scope.brandCampaigns.unshift({
+                        BrandId: 0,
+                        CompanyId: 0,
+                        Id: 0,
+                        Name: "None Available"
+                    });
+                    $scope.campaignSelection = $scope.brandCampaigns[0];
+                    $scope.brandItems = [];
+                }
             },
             function (error) {
                 console.log("Error: " + error);
